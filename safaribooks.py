@@ -10,6 +10,7 @@ import logging
 import argparse
 import requests
 import traceback
+import pyCookieCheat
 from html import escape
 from random import random
 from lxml import html, etree
@@ -315,6 +316,10 @@ class SafariBooks:
         self.session.headers.update(self.HEADERS)
 
         self.jwt = {}
+
+        if args.chrome_cookies:
+            cookies = pyCookieCheat.chrome_cookies(ORLY_BASE_URL)
+            json.dump(cookies, open(COOKIES_FILE, 'w'))
 
         if not args.cred:
             if not os.path.isfile(COOKIES_FILE):
@@ -1041,6 +1046,10 @@ if __name__ == "__main__":
         help="Prompt for credentials used to perform the auth login on Safari Books Online."
     )
 
+    arguments.add_argument(
+        "--chrome-cookies", dest="chrome_cookies", action='store_true',
+        help="Use cookies from google chrome."
+    )
     arguments.add_argument(
         "--no-cookies", dest="no_cookies", action='store_true',
         help="Prevent your session data to be saved into `cookies.json` file."
